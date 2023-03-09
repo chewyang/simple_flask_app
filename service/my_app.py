@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
+from .import app
 
-app = Flask(__name__)
-app.secret_key = "hello" #need to set secret key first before setting up session
-app.permanent_session_lifetime = timedelta(seconds = 5) # store perm session for certain amount of time
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3' #name of table for referencing
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app = Flask(__name__)
+# app.secret_key = "hello" #need to set secret key first before setting up session
+# app.permanent_session_lifetime = timedelta(seconds = 5) # store perm session for certain amount of time
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3' #name of table for referencing
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
@@ -62,7 +63,6 @@ def user():
     email = None
     if "user" in session:
         user = session['user']
-
         if request.method == "POST":
             email = request.form["email"]
             session["email"] = email
@@ -78,6 +78,7 @@ def user():
         return render_template("user.html", email=email)
     
     else:
+        # flash(session['user'])
         flash("You are not logged in!")
         return redirect(url_for("login"))
         

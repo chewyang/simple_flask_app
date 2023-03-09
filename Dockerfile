@@ -7,4 +7,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD python my_app.py
+EXPOSE 5000
+CMD ["gunicorn", "--bind=0.0.0.0:5000", "--log-level=info", "service:app"]
