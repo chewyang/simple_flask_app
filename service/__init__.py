@@ -15,4 +15,6 @@ app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(minutes = 5) 
 app.logger.info("Service initialized!")
 
-from service import my_app
+from service import models, routes
+
+models.init_db(app)
