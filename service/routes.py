@@ -2,15 +2,16 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
 from .import app
+from service.common import status # HTTP status codes
 from service.models import Users
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index.html"), status.HTTP_200_OK
     
 @app.route("/view")
 def view():
-    return render_template("view.html", values=Users.all())
+    return render_template("view.html", values=Users.all()), status.HTTP_200_OK
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
@@ -32,12 +33,12 @@ def login():
             usr.create()
         
         flash("Login successful")
-        return redirect(url_for("user"))
+        return redirect(url_for("user")), status.HTTP_302_FOUND
     else:
         if "user" in session:
             flash("Already logged in!")
-            return redirect(url_for("user"))
-        return render_template("login.html")
+            return redirect(url_for("user")), status.HTTP_302_FOUND
+        return render_template("login.html"), status.HTTP_200_OK
 
 @app.route("/user", methods=["POST", "GET"])
 def user():
@@ -54,12 +55,12 @@ def user():
                 email = session["email"]
         #Take session data
         #user = session["user"]
-        return render_template("user.html", email=email)
+        return render_template("user.html", email=email), status.HTTP_200_OK
     
     else:
         # flash(session['user'])
         flash("You are not logged in!")
-        return redirect(url_for("login"))
+        return redirect(url_for("login")), status.HTTP_401_UNAUTHORIZED
         
 @app.route("/logout")
 def logout():
@@ -69,6 +70,6 @@ def logout():
         flash(f"You have been logged out, {user}", "info") # message flashing
     session.pop("user", None)
     session.pop("email", None)
-    return redirect(url_for("login"))
+    return redirect(url_for("login")), status.HTTP_302_FOUND
     
 
